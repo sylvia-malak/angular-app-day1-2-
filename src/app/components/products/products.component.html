@@ -1,0 +1,57 @@
+<div class="container mt-4">
+   <!--  هنا بنشوف لو العميل مشتريش حاجة ولا لسه لو مشتريش بيظهر الاولي لو اشتري بيظهر التانيه-->
+  @if (!IsPurchased) {
+    <div class="text-center mb-4">
+      <h2>Welcome to {{ Store.Name }}!</h2>
+      
+    </div>
+  } @else {
+    <div class="alert alert-success text-center">
+      Thanks for purchasing from {{ Store.Name }}, {{ ClientName }}!
+    </div>
+  }
+  
+   <!-- زرار علشان يتحول بين حالتين قبل الشرا وبعده -->
+  <button class="btn btn-primary mb-3" (click)="togglePurchase()">
+    {{ IsPurchased ? 'Continue Shopping' : 'View Purchase Message' }}
+  </button>
+
+  <select class="form-select mb-4" [(ngModel)]="selectedCategory">
+    <option [value]="null">All Categories</option>
+    <option [value]="1">Category 1</option>
+    <option [value]="2">Category 2</option>
+  </select>
+
+ 
+  <div class="row">
+    @for (product of filteredProducts; track product.ID) {
+      <div class="col-md-4 mb-4">
+        <div class="card h-100" [style.border-left]="'5px solid ' + getRowColor(product.Quantity)">
+          
+          <img [src]="product.Img || 'assets/default-product.jpg'" class="card-img-top" alt="{{ product.Name }}">
+
+          <div class="card-body">
+            
+            <h5 class="card-title">{{ product.Name }}</h5>
+            
+            
+            <p class="card-text">Price: ${{ product.Price }}</p>
+            <p class="card-text">Available: {{ product.Quantity }}</p>
+            
+            
+            <p class="text-danger" *ngIf="!isNoDiscount(product.Discount)">
+              Discount: {{ product.Discount }}
+            </p>
+            
+            <button 
+              class="btn btn-primary w-100" 
+              (click)="decreaseQuantity(product)" 
+              [disabled]="product.Quantity === 0">
+              Buy Now
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
